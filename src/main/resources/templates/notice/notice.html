@@ -142,6 +142,48 @@
 		})
 		.catch(err => alert(err.message));
 		
+		function renderContents(page) {
+			return new Promise(async (resolve) => {
+				const keyword = document.getElementById("keyword").value;
+				const selector = document.getElementById("keykind");
+				const keykind = selector.options[selector.selectedIndex].value;
+				let search = "?page=" + page + (keyword ? "&keykind=" + keykind + "&keyword=" + keyword : "");
+				
+				API.get("/notices" + search).then(async resp => {
+					setCookie("search", search, new URL(location.href).pathname);
+					
+					//table
+					let tbody = getEmptyElement(document.querySelector('.table_area tbody'));
+					resp.data.forEach(function (item, index) {
+						var row = tbody.insertRow();
+						row.insertCell().insertAdjacentHTML("beforeend", `<input type="checkbox" value="${item.noticeSeq}"/>`);
+						row.insertCell().innerText = item.rowNum;
+						row.insertCell().innerText = item.compNm;
+						let titleCell = row.insertCell();
+						titleCell.classList.add('left');
+						titleCell.insertAdjacentHTML("beforeend", `<a href="javascript:detail(${item.noticeSeq});" class="board_tit notice">${item.title}</a>`);
+						let attachedCell = row.insertCell();
+						if(item.attachedFiles && item.attachedFiles.length > 0) {
+							attachedCell.insertAdjacentHTML("beforeend", `<span class="attached">첨부파일 있음</span>`);
+							attachedCell.title = item.attachedFiles.map(function(item) { return item['fileOrgNm'];}).join('\n');
+						}
+						row.insertCell().insertAdjacentHTML("beforeend", `<span class="writer">${item.regNm}</span>`);
+						row.insertCell().innerText = new Date(item.regDt).toLocaleDateString();
+						row.insertCell().innerText = item.viewCnt;
+					});
+					
+					//total count
+					document.querySelector('.board_top .number b').innerText = resp.query.pagination.totalCount;
+					
+					//paging
+					renderPagination(resp.query.pagination, this.renderContents);
+					
+					resolve();
+			
+				});					
+			}).catch(alert);
+		}
+		
 		function detail(seq) {
 			API.patch("/notices/" + seq)
 			.then(() => location.href = "/notice/detail?noticeSeq=" + seq)
@@ -186,49 +228,7 @@
 			
 			if(flag) alert("공지사항 삭제 성공");	
 			location.reload();
-		}
-		
-		function renderContents(page) {
-			return new Promise(async (resolve) => {
-				const keyword = document.getElementById("keyword").value;
-				const selector = document.getElementById("keykind");
-				const keykind = selector.options[selector.selectedIndex].value;
-				let search = "?page=" + page + (keyword ? "&keykind=" + keykind + "&keyword=" + keyword : "");
-				
-				API.get("/notices" + search).then(async resp => {
-					setCookie("search", search);
-					
-					//table
-					let tbody = getEmptyElement(document.querySelector('.table_area tbody'));
-					resp.data.forEach(function (item, index) {
-						var row = tbody.insertRow();
-						row.insertCell().insertAdjacentHTML("beforeend", `<input type="checkbox" value="${item.noticeSeq}"/>`);
-						row.insertCell().innerText = item.rowNum;
-						row.insertCell().innerText = item.compNm;
-						let titleCell = row.insertCell();
-						titleCell.classList.add('left');
-						titleCell.insertAdjacentHTML("beforeend", `<a href="javascript:detail(${item.noticeSeq});" class="board_tit notice">${item.title}</a>`);
-						let attachedCell = row.insertCell();
-						if(item.attachedFiles && item.attachedFiles.length > 0) {
-							attachedCell.insertAdjacentHTML("beforeend", `<span class="attached">첨부파일 있음</span>`);
-							attachedCell.title = item.attachedFiles.map(function(item) { return item['fileOrgNm'];}).join('\n');
-						}
-						row.insertCell().insertAdjacentHTML("beforeend", `<span class="writer">${item.regNm}</span>`);
-						row.insertCell().innerText = new Date(item.regDt).toLocaleDateString();
-						row.insertCell().innerText = item.viewCnt;
-					});
-					
-					//total count
-					document.querySelector('.board_top .number b').innerText = resp.query.pagination.totalCount;
-					
-					//paging
-					renderPagination(resp.query.pagination, this.renderContents);
-					
-					resolve();
-			
-				});					
-			}).catch(alert);
-		}
+		}		
 	</script>		
 </body>
 </html>

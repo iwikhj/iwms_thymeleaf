@@ -11,10 +11,10 @@
 	 * Set cookie
 	 * expiration time: 60 * 60 * 1000 = 1h
 	 */
-	function setCookie(name, value) {
+	function setCookie(name, value, path = '/') {
 	    let d = new Date();
 	    d.setTime(d.getTime() + 60 * 60 * 1000);
-	    document.cookie = name + '=' + value + ';expires=' + d.toUTCString() + ';path=/';
+	    document.cookie = name + '=' + value + ';expires=' + d.toUTCString() + ';path=' + path;
 	};
 	
 	/**
@@ -28,7 +28,7 @@
 	/**
 	 * Delete cookie
 	 */	
-	function delCookie(name) {
+	function delCookie(name, path = '/') {
 	    let d = new Date();
-	    document.cookie = name + '= ' + '; expires=' + d.toUTCString() + '; path=/';
+	    document.cookie = name + '= ' + '; expires=' + d.toUTCString() + ';path=' + path;
 	};

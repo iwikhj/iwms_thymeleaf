@@ -1,9 +1,9 @@
 /**
  * 
  */
-function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
+function CommonApi(apiBaseUrl = 'http://192.168.0.77/iwms', apiVersion = 'v1') {
 	
-	const target = apiBaseUrl + "/" + apiVersion; 
+	const target = apiBaseUrl + '/' + apiVersion; 
 
 	this.get = async function(url) {
 		return await apiCall(url); 	
@@ -47,12 +47,12 @@ function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 				url: target + url,
 				cache: false,
 				xhrFields: {
-					responseType: "blob"
+					responseType: 'blob'
 				}
 			};	
 			let blob = await callAjax(options);
 			let fileObjectUrl = window.URL.createObjectURL(blob);
-			let a = document.createElement("a");
+			let a = document.createElement('a');
 			a.href = fileObjectUrl;
 			a.download = name;
 			a.click();
@@ -61,7 +61,7 @@ function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 		
 		fetch(target + url, {
 			headers: {
-				"Authorization": "Bearer " + localStorage.getItem("accessToken")
+				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
 			}
 		})
 		.then (async response => {
@@ -73,7 +73,7 @@ function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 		})
 		.then(blob => {
 			let fileObjectUrl = window.URL.createObjectURL(blob);
-			let a = document.createElement("a");
+			let a = document.createElement('a');
 			a.href = fileObjectUrl;
 			a.download = name;
 			a.click();
@@ -86,10 +86,10 @@ function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 	 */		
 	async function apiCall(url, options = {method: 'GET'}) {
 		return new Promise(async (resolve, reject) => {
-			console.log("[" + options.method + "] " + (target + url) + (options.body ? ", [BODY] " + formDataToString(options.body) : ""));
+			console.log('[' + options.method + '] ' + (target + url) + (options.body ? ', [BODY] ' + formDataToString(options.body) : ''));
 			
 			options.headers = {
-				"Authorization": "Bearer " + localStorage.getItem("accessToken")
+				'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
 			}
 			
 			const response = await fetch(target + url, options).catch(reject);
@@ -99,23 +99,23 @@ function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 			if(!result) return;
 			
 			if(response.ok) {
-				console.log("[RES] ", result);
+				console.log('[RES] ', result);
 				resolve(result);
 			} else if(response.status == 401 && result.code == '023') {
-				console.warn("토큰 만료");
+				console.warn('토큰 만료');
 				result = await reissue();
 				
 				if(result.data) {
-					console.warn("토큰 재발급 성공");
-					localStorage.setItem("accessToken", result.data.accessToken);
+					console.warn('토큰 재발급 성공');
+					localStorage.setItem('accessToken', result.data.accessToken);
 					resolve(apiCall(url, options));
 				} else {
-					console.warn("토큰 재발급 실패");
-					console.error("[ERR] ", result);
+					console.warn('토큰 재발급 실패');
+					console.error('[ERR] ', result);
 					reject(result);			
 				}
 			} else {
-				console.error("[ERR] ", result);
+				console.error('[ERR] ', result);
 				reject(result);					
 			}
 		});		
@@ -126,27 +126,22 @@ function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 	 */
 	async function reissue() {
 		let formData = new FormData();
-		formData.append("refreshToken", localStorage.getItem("refreshToken"));
-		
-		let reissueOptions = {
-			method: "post",
-			body: formData
-		}
-		return await fetch(target + "/reissue", reissueOptions).then(response => response.json());
+		formData.append('refreshToken', localStorage.getItem('refreshToken'));
+		return await fetch(target + '/reissue', {method: 'POST', body: formData}).then(response => response.json());
 	};
 	
 	/**
 	 * FormData to string
 	 */
 	function formDataToString(fd) {
-	    let s="", f = "";
+	    let s='', f = '';
 	    for(const [name, value] of fd.entries()){
-	        if(typeof value == "string") {
-	            s += (s ? "&" : "") + name + "=" + value;
-	        } else if(typeof value == "object" && value instanceof File) {
- 				f += (f ? "," : "&" + name  +"=[") + value.name;
+	        if(typeof value == 'string') {
+	            s += (s ? '&' : '') + name + '=' + value;
+	        } else if(typeof value == 'object' && value instanceof File) {
+ 				f += (f ? ',' : '&' + name  +'=[') + value.name;
  			}
 	    }
-	    return s + (f ? f + "]" : "");
+	    return s + (f ? f + ']' : '');
 	};
 }

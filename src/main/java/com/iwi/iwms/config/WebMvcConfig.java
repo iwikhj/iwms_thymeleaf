@@ -22,10 +22,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 	
     public void addViewControllers(ViewControllerRegistry registry) {
-    	registry.addViewController("/").setViewName("notice/notice");
+    	registry.addViewController("/").setViewName("redirect:/notice");
     	registry.addViewController("/notice").setViewName("notice/notice");
     	registry.addViewController("/notice/detail").setViewName("notice/detail");
-    	registry.addViewController("/system").setViewName("system/user");
+    	registry.addViewController("/system").setViewName("redirect:/system/user");
     	registry.addViewController("/system/user").setViewName("system/user");
     }
 }
