@@ -1,13 +1,14 @@
 server:
- port: 8080
+  port: 8080
 
 #Live reload 
 spring:
- thymeleaf:
-  cache: false
- devtools:
-  livereload:
-    enabled: true
+  thymeleaf:
+   cache: false
+  devtools:
+   livereload:
+     enabled: true
 
 api:
- base-url: http://192.168.0.77/iwms/v1/
+  base-url: http://192.168.0.77/iwms
+  version: v1

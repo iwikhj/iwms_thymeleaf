@@ -1,9 +1,9 @@
 /**
  * 
  */
-function CommonApi(url = "http://192.168.0.77/iwms", version = "v1") {
+function CommonApi(apiBaseUrl = "http://192.168.0.77/iwms", apiVersion = "v1") {
 	
-	const target = url + "/" + version; 
+	const target = apiBaseUrl + "/" + apiVersion; 
 
 	this.get = async function(url) {
 		return await apiCall(url); 	
