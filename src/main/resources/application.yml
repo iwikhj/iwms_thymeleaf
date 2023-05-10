@@ -4,10 +4,10 @@ server:
 #Live reload 
 spring:
   thymeleaf:
-   cache: false
+    cache: false
   devtools:
-   livereload:
-     enabled: true
+    livereload:
+      enabled: true
 
 api:
   base-url: http://192.168.0.77/iwms
