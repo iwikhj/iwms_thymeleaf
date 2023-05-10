@@ -41,7 +41,8 @@ function CommonApi(url = "http://192.168.0.77/iwms", version = "v1") {
 	};		
 	
 	this.download = async function(url, name) {	
-		/*  JQuery 3.0 ++ 
+		/* JQuery 3.0 ++ 
+			
 			let options = {
 				url: target + url,
 				cache: false,
