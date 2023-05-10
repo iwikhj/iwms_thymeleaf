@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: head(~{::title})">
+<title>사용자 관리</title>
+</head>
+<body>
+	<div>
+		<div id="login" class="hide">
+			<form th:id="login-form">
+				<label>아이디</label>
+				<input type="text" th:name="username"/>
+				<label>비밀번호</label>
+				<input type="password" th:name="password"/>
+				<button type="button" th:onclick="login();">로그인</button>
+			</form>
+		</div>
+		<div id="login-info" class="hide">
+			<label>이름: </label>
+			<span id="login-username"></span>
+			<button type="button" th:onclick="logout();">로그아웃</button>		
+		</div>
+	</div>
+	<br>
+	
+	<div id="nav"></div>
+	<br>
+	
+	<div>
+		<select th:id="keykind">
+			<option value="title">제목</option>
+			<option value="compNm">소속</option>
+			<option value="regNm">작성자</option>
+		</select>
+		<input type="text" th:id="keyword"/>
+		<button type="button" th:onclick="renderTable(1);">검색</button>
+		
+		<table id="userTable" th:fragment="userTable">
+			<thead>
+				<tr>
+					<th></th>
+					<th>번호</th>
+					<th>소속명</th>
+					<th>제목</th>
+					<th>메인고정</th>
+					<th>상단고정</th>
+					<th>작성자</th>
+					<th>작성일</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>		
+		<div id="pagination"></div>
+	</div>
+	
+	<script th:inline="javascript">
+		onload("/pages/system/user", function () {
+			var page = 1;
+			var query = queryStringToObject(getCookie("query"));
+			if(Object.keys(query).length !== 0) {
+				page = query.page;
+				document.getElementById("keykind").value = query.keykind || document.getElementById("keykind").options[0].value;
+				document.getElementById("keyword").value = query.keyword || "";
+			}
+			renderTable(page);
+		});
+		
+		function renderTable(page) {
+			var keyword = document.getElementById("keyword").value;
+			var selector = document.getElementById("keykind");
+			var keykind = selector.options[selector.selectedIndex].value;
+			var url = "/users?page=" + page + (keyword ? "&keykind=" + keykind + "&keyword=" + keyword : "");
+			
+			API.get(url).then(async resp => {
+				setCookie("query", url.substring(url.indexOf("?")));
+				
+				var tbody = getEmptyElement(document.querySelector('#userTable tbody'));
+				
+				resp.data.forEach(function (item, index) {
+					var row = tbody.insertRow();
+					row.insertCell().innerHTML = '<input type="checkbox" name="' + item.noticeSeq + '"/>';
+					row.insertCell().innerText = item.rowNum;
+					row.insertCell().innerText = item.compNm;
+					row.insertCell().innerText = item.title;
+					row.insertCell().innerText = item.mainTopYn;
+					row.insertCell().innerText = item.fixedTopYn;
+					row.insertCell().innerText = item.regNm;
+					row.insertCell().innerText = item.regDt;
+				});
+				
+				var pagination = resp.query.pagination;
+				renderPagination(pagination, renderUserTable);
+			});	
+		}
+	</script>		
+</body>
+</html>

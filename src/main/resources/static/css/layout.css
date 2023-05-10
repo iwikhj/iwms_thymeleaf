@@ -1,0 +1,59 @@
+#wrap {width: 100%; max-width: 1920px; margin: 0 auto;}
+#contents {width: 100%; position: relative;}
+.sub_inner {background: #f5f5f5;}
+.pc_wrap {width: 1280px; min-width: 1280px; margin: 0 auto;}
+
+/*header css area*/
+#header {width: 100%;}
+#header .header_inner {width: 100%; min-width: 1280px; position: relative; height: 100px; display: flex; justify-content: space-between; align-items: center;}
+#header .header_inner .lt_logo_area {padding-left: 40px;}
+#header .header_inner .rt_menu_area {padding-right: 40px;}
+#header .header_inner .lt_logo_area ul {overflow: hidden;}
+#header .header_inner .lt_logo_area ul li {float: left; margin-right: 30px;}
+#header .header_inner .lt_logo_area ul li:last-of-type {margin-right: 0;}
+#header .header_inner .lt_logo_area ul li a {display: block;}
+#header .header_inner .lt_logo_area ul li:last-of-type a img {margin-top: 4px;}
+#header .header_inner .rt_menu_area ul {overflow: hidden;}
+#header .header_inner .rt_menu_area ul li {float: left; margin-right: 50px;}
+#header .header_inner .rt_menu_area ul li:last-of-type {margin-right: 0;}
+#header .header_inner .rt_menu_area ul li a {font-size: 18px; color: #000; font-weight: 500; line-height: 1; letter-spacing: -0.9px; display: block;}
+#header .header_inner .rt_menu_area ul li.on a {color: #0167f7;}
+
+/*footer css area*/
+#footer {width: 100%;}
+#footer .footer_inner {width: 1000px; min-width: 1000px; margin: 0 auto; position: relative; height: 110px;}
+#footer .footer_inner .lt_info_area {position: absolute; top: 50%; left: 20px; transform: translate(0,-50%); -webkit-transform: translate(0,-50%); -ms-transform: translate(0,-50%); -moz-transform: translate(0,-50%); -o-transform: translate(0,-50%);}
+#footer .footer_inner .lt_info_area p {font-size: 16px; color: #000; font-weight: 500; line-height:26px; letter-spacing: -0.8px;}
+#footer .footer_inner .lt_info_area p span {color: #757575; font-size: 14px; letter-spacing: -0.35px; font-weight: 400;}
+#footer .footer_inner .rt_logo_area {position: absolute; top: 50%; right: 20px; transform: translate(0,-50%); -webkit-transform: translate(0,-50%); -ms-transform: translate(0,-50%); -moz-transform: translate(0,-50%); -o-transform: translate(0,-50%);}
+
+
+/* ------------------------------ 팝업 ------------------------------ */
+.modPopup {width:100%; height:100%; display:none; position:fixed; left:0; top:0; z-index:10000;}
+.modPopup.on {display:block;}
+
+.modPopup .popupDim {width:100%; height:100%; font-size:0; background:rgba(0,0,0,0.4); position:fixed; left:0; top:0;}
+.modPopup.on .popupDim {opacity:0; animation: popOpenDimd 0.2s linear forwards;}
+@keyframes popOpenDimd { 0% {opacity:0;} 100% {opacity:1;} }
+
+.modPopup .popupArea {width:700px; height:auto; max-height: calc(100% - 100px);position:absolute; right:50%; bottom:50%; transform: translate(50%,50%);}
+
+.modPopup .popupInMotion {width:100%; height:100%; background:#fff;}
+.modPopup.on .popupInMotion {opacity:0; transform:scale(0.7); animation: popOpenScale 0.3s linear forwards;}
+@keyframes popOpenScale { 0% {opacity:0; transform:scale(0.7);} 100% {opacity:1; transform:scale(1);} }
+
+.modPopup .btnPopClose {width:40px; height:40px; font-size:0; background:url(../../img/btn_close.png) center no-repeat; position:absolute; right:10px; top:10px;}
+.modPopup .popupContGroup {height:100%; max-height: calc(100vh - 100px); padding: 50px 40px; overflow:auto;}
+.modPopup .popupContGroup::-webkit-scrollbar {width: 6px;}
+.modPopup .popupContGroup::-webkit-scrollbar-thumb {background-color: rgba(0,0,0,0.25);}
+.modPopup .popupContGroup.noPd {padding:0;}
+
+
+/* 팝업 컨텐츠 변경 */
+.modPopup .popup_tit {width: 100%; margin-bottom: 40px;}
+.modPopup .popup_tit .pop_tit {width: 100%; text-align: center; font-size: 28px; font-weight: 700; color: #000;}
+.modPopup .submit_area ul li .btn {line-height: 60px; font-size: 20px; }
+
+.modPopup .applicant_info {height: calc(100vh - 405px); padding: 0 5px; overflow-y: auto;}
+.modPopup .applicant_info::-webkit-scrollbar {width: 6px;}
+.modPopup .applicant_info::-webkit-scrollbar-thumb {background-color: rgba(0,0,0,0.25);}

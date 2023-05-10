@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: head(~{::title})">
+<title>공지사항</title>
+</head>
+<body>
+	<div>
+		<div>
+			<div id="login" class="hide">
+				<form th:id="login-form">
+					<label>아이디</label>
+					<input type="text" th:name="username"/>
+					<label>비밀번호</label>
+					<input type="password" th:name="password"/>
+					<input type="button" onclick="javascript:login();" value="로그인"/>
+				</form>
+			</div>
+			<div id="login-info" class="hide">
+				<label>이름: </label>
+				<span id="login-username"></span>
+				<input type="button" onclick="javascript:logout();" value="로그아웃"/>
+			</div>
+		</div>
+		<br>
+		
+		<header id="header" class="main-header" th:fragment="header">
+			<div id="header">
+			    <div class="header_inner">
+			        <div class="lt_logo_area">
+			            <ul>
+			                <li><a th:href="@{/guide/guide.do}"><img th:src="@{/img/CI_SportsOn.png}" alt="공공 스포츠 클럽" /></a></li>
+			            </ul>
+			        </div>
+			        <div class="rt_menu_area" id="nav"></div>
+			    </div>
+			</div>
+		</header>
+		
+		<div>
+			<form th:id="notice-form">
+				<span>Seq</span>
+				<input type="text" name="noticeSeq"/>
+				<span>소속</span>
+				<input type="text" name="compSeq"/>
+				<span>제목</span>
+				<input type="text" name="title"/>
+				<span>내용</span>
+				<input type="text" name="content"/>
+				<span>최상단 고정 여부</span>
+				<input type="text" name="fixedTopYn" value="N"/>
+				<span>메인상단 노출 여부</span>
+				<input type="text" name="mainTopYn" value="N"/>
+				<span>사용 여부</span>
+				<input type="text" name="useYn" value="Y"/>
+				<span>첨부파일</span>
+				<input type="file" multiple="multiple" name="files"/>
+				<input type="button" onclick="javascript:add();" value="등록"/>
+				<input type="button" onclick="javascript:update();" value="수정"/>
+				<input type="button" onclick="javascript:remove();" value="삭제"/>
+			</form>
+		</div>		
+	
+		<div id="contents">
+			<div class="sub_inner">
+				<div class="step_box board">
+					<div class="box_area">
+						<div class="lay_topic">
+							<div>
+								<p>공지사항</p>
+							</div>
+						</div>
+						<!-- 게시판 탑 영역 -->
+						<div class="board_top">
+							<div class="top_area">
+								<div class="l_area">
+									<div class="number">총 <b>0</b> 건</div>
+								</div>
+								<div class="r_area">
+									<div class="board_search">
+										<select class="slct_condi" id="keykind">
+											<option value="title">제목</option>
+											<option value="compNm">소속</option>
+											<option value="regNm">작성자</option>
+										</select>
+										<input type="text" class="ipt_search" id="keyword" placeholder="검색어를 입력하세요."/>
+										<button type="button" class="btn_search" onclick="javascript:renderContents(1); return false;">검색하기</button>
+									</div>
+								</div>
+							</div>
+						</div>	
+				
+						<!-- 게시판 테이블 영역 -->
+						<div class="board_table">
+							<div class="table_area">
+								<table>
+									<caption>공지사항 : 번호, 제목, 첨부파일, 작성자, 등록일, 조회수를 포함한 표입니다.</caption>
+									<colgroup>
+										<col style="width:5%;">
+										<col style="width:5%;">
+										<col style="width:15%;">
+										<col style="width:auto;">
+										<col style="width:8%;">
+										<col style="width:12.5%;">
+										<col style="width:9%;">
+										<col style="width:8.5%;">
+									</colgroup>
+									<thead>
+										<tr>
+											<th><input type="checkbox" onclick="javascript:checkAll(this.checked);"/></th>
+											<th>번호</th>
+											<th>소속명</th>
+											<th>제목</th>
+											<th>첨부</th>
+											<th>작성자</th>
+											<th>등록일</th>
+											<th>조회수</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						
+						<!-- 페이지네이션 -->
+						<div class="pagination">
+							<div class="pagi_area" id="pagination"></div>
+						</div>
+					</div>
+				</div>	
+			</div>
+		</div>	
+	</div>
+	<script th:inline="javascript">
+		onload("/pages/notice", async () => {
+			const searchParams = new URLSearchParams(getCookie("search"));
+			var page = searchParams.get('page') || 1;
+			document.getElementById("keykind").value = searchParams.get('keykind') || document.getElementById("keykind").options[0].value;
+			document.getElementById("keyword").value = searchParams.get('keyword') || "";
+			
+			await renderContents(page);
+		})
+		.catch(err => alert(err.message));
+		
+		function detail(seq) {
+			API.patch("/notices/" + seq)
+			.then(() => location.href = "/notice/detail?noticeSeq=" + seq)
+			.catch(err => alert(err.message));
+		}
+		
+		function add() {
+			let formData = new FormData(document.getElementById("notice-form"));
+			
+			API.post("/notices", formData)
+			.then(() => alert("공지사항 등록 성공"))
+			.then(() => location.reload())
+			.catch(err => alert(err.message));
+		}
+		
+		function update() {
+			let formData = new FormData(document.getElementById("notice-form"));
+			
+			API.put("/notices/" + formData.get("noticeSeq"), formData)
+			.then(() => alert("공지사항 수정 성공"))
+			.then(() => location.reload())
+			.catch(err => alert(err.message));
+		}
+		
+		function checkAll(checked) {
+			let checkbox = document.querySelectorAll('.table_area tbody input[type=checkbox]');
+			checkbox.forEach(item => item.checked = checked);
+		}
+		
+		async function remove() {
+			let checked = document.querySelectorAll('.table_area tbody input[type=checkbox]:checked');
+			if (checked.length == 0) {
+				alert("공지사항을 선택해주세요");
+				return false;
+			}
+			
+			let flag = true;
+			for(const [index, item] of checked.entries()) {
+				await API.delete("/notices/" + item.value)
+				.catch(err => {flag = false; alert(err.message)});
+			}
+			
+			if(flag) alert("공지사항 삭제 성공");	
+			location.reload();
+		}
+		
+		function renderContents(page) {
+			return new Promise(async (resolve) => {
+				const keyword = document.getElementById("keyword").value;
+				const selector = document.getElementById("keykind");
+				const keykind = selector.options[selector.selectedIndex].value;
+				let search = "?page=" + page + (keyword ? "&keykind=" + keykind + "&keyword=" + keyword : "");
+				
+				API.get("/notices" + search).then(async resp => {
+					setCookie("search", search);
+					
+					console.log("//", API.target)
+					//table
+					let tbody = getEmptyElement(document.querySelector('.table_area tbody'));
+					resp.data.forEach(function (item, index) {
+						var row = tbody.insertRow();
+						row.insertCell().insertAdjacentHTML("beforeend", `<input type="checkbox" value="${item.noticeSeq}"/>`);
+						row.insertCell().innerText = item.rowNum;
+						row.insertCell().innerText = item.compNm;
+						let titleCell = row.insertCell();
+						titleCell.classList.add('left');
+						titleCell.insertAdjacentHTML("beforeend", `<a href="javascript:detail(${item.noticeSeq});" class="board_tit notice">${item.title}</a>`);
+						let attachedCell = row.insertCell();
+						if(item.attachedFiles && item.attachedFiles.length > 0) {
+							attachedCell.insertAdjacentHTML("beforeend", `<span class="attached">첨부파일 있음</span>`);
+							attachedCell.title = item.attachedFiles.map(function(item) { return item['fileOrgNm'];}).join('\n');
+						}
+						row.insertCell().insertAdjacentHTML("beforeend", `<span class="writer">${item.regNm}</span>`);
+						row.insertCell().innerText = new Date(item.regDt).toLocaleDateString();
+						row.insertCell().innerText = item.viewCnt;
+					});
+					
+					//total count
+					document.querySelector('.board_top .number b').innerText = resp.query.pagination.totalCount;
+					
+					//paging
+					renderPagination(resp.query.pagination, this.renderContents);
+					
+					resolve();
+			
+				});					
+			}).catch(alert);
+		}
+	</script>		
+</body>
+</html>

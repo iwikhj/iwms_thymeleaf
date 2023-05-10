@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:fragment="head(title)">
+		<meta charset="UTF-8">
+		
+		<title th:replace="${title}"></title>
+		<link rel="shortcut icon" href="#">
+		
+		<link type="text/css" rel="stylesheet" th:href="@{/css/layout.css}">
+		<link type="text/css" rel="stylesheet" th:href="@{/css/default.css}">
+		<link type="text/css" rel="stylesheet" th:href="@{/css/main.css}">
+		<link type="text/css" rel="stylesheet" th:href="@{/css/sub.css}">
+		
+		<style>
+			.active {color: blue; font-weight: bold;}
+			.hide {display: none;} 
+			.pagination ul li {float: left;} 
+		</style>
+		
+		<script type="text/javascript" th:src="@{/js/common.js}"></script>  
+		<script type="text/javascript" th:src="@{/js/common-api.js}"></script>  
+		<script type="text/javascript" th:src="@{/js/common-page.js}"></script>  
+		<script type="text/javascript">
+			const API = new CommonApi();
+		</script>  
+	</head>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: head(~{::title})">
+<title>공지사항</title>
+</head>
+<body>
+	<div>
+		<div>
+			<div id="login" class="hide">
+				<form th:id="login-form">
+					<label>아이디</label>
+					<input type="text" th:name="username"/>
+					<label>비밀번호</label>
+					<input type="password" th:name="password"/>
+					<input type="button" onclick="javascript:login();" value="로그인"/>
+				</form>
+			</div>
+			<div id="login-info" class="hide">
+				<label>이름: </label>
+				<span id="login-username"></span>
+				<input type="button" onclick="javascript:logout();" value="로그아웃"/>
+			</div>
+		</div>
+		<br>
+		
+		<header id="header" class="main-header" th:fragment="header">
+			<div id="header">
+			    <div class="header_inner">
+			        <div class="lt_logo_area">
+			            <ul>
+			                <li><a th:href="@{/guide/guide.do}"><img th:src="@{/img/CI_SportsOn.png}" alt="공공 스포츠 클럽" /></a></li>
+			            </ul>
+			        </div>
+			        <div class="rt_menu_area" id="nav"></div>
+			    </div>
+			</div>
+		</header>
+	
+		<div id="contents">
+			<div class="sub_inner">
+				<div class="step_box board">
+					<div class="box_area">
+						<div class="lay_topic">
+							<div>
+								<p>공지사항</p>
+							</div>
+						</div>
+						
+						<!-- 게시판 view -->
+						<div class="board_view">
+							<div class="view_area">
+								<div class="view_info">
+									<div class="tit"></div>
+									<ul class="info">
+										<li class="item writer"></li>
+										<li class="item regDt"></li>
+										<li class="item viewCnt"></li>
+									</ul>
+								</div>
+								<div class="view_cont content"></div>
+								<div class="view_attach attached">
+									<ul class="atch_group">
+										<!-- 
+										<li class="item" th:each="clubFileMng : ${fileList}">
+											<a th:href="@{/file/fileDown.do(fileMngSeq=${clubFileMng.fileMngSeq})}" target="_blank" th:text="${clubFileMng.fileOrgnlNm}"></a>
+										</li>
+										 -->
+									</ul>
+								</div>
+							</div>
+							
+							<div class="board_navi">
+								<ul class="navi_group">
+									<li class="item">
+										<div class="tit">이전글</div>
+										<div class="cont">
+											이전글 없습니다.
+										</div>
+									</li>
+									<li class="item">
+										<div class="tit">다음글</div>
+										<div class="cont">
+											다음글 없습니다.
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="crud_area">
+							<ul class="btn_group">
+								<li class="unit">
+									<a href="javascript: history.back();" class="btn line-black">목록</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
+	<script th:inline="javascript">
+		onload("/pages/notice/detail", async () => {
+			const noticeSeq = new URL(location.href).searchParams.get('noticeSeq');
+			await renderContents(noticeSeq);
+		});
+		
+		function renderContents(noticeSeq) {
+			return new Promise(resolve => {
+				API.get("/notices/" + noticeSeq).then(async resp => {
+					let data = resp.data;
+					document.querySelector('.tit').innerText = data.title;
+					document.querySelector('.writer').innerText = data.regNm;
+					document.querySelector('.regDt').innerText = data.regDt;
+					document.querySelector('.viewCnt').innerText = data.viewCnt;
+					document.querySelector('.content').innerHTML = data.content;
+					
+					let attachedFiles = data.attachedFiles;
+					if(attachedFiles && attachedFiles.length > 0) {
+						let fragmentAttached = document.createDocumentFragment();
+						attachedFiles.forEach(function (item, index) {
+							let attachedLi = document.createElement('li');
+							attachedLi.classList.add('item');
+							attachedLi.insertAdjacentHTML("beforeend", `<a href="javascript:API.download('${item.fileDownloadPath}', '${item.fileOrgNm}');" class="attached">${item.fileOrgNm}</a>`);
+							fragmentAttached.appendChild(attachedLi);
+						});
+						document.querySelector('.attached ul').appendChild(fragmentAttached);
+					}
+					
+					resolve();
+				});					
+			}).catch(alert);
+		}		
+	</script>		
+</body>
+</html>

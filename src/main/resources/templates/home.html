@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<input type="text" th:value="${name}" value="Gorany"/>
+	<button type="button" th:onclick="get()">Notice</button>
+
+	<a th:href="@{/login}">Login</a>
+
+	<script th:src="@{/js/jquery-1.12.4.min.js}"></script>  
+	<script th:src="@{/js/rest-api.js}"></script>  
+	
+	<script>
+	function get() {
+		callAjax("/notices").then(success => {
+			console.log("get success, ", success);
+		}, err => {
+			console.error("get fail, ", err);
+		});
+	}		
+	</script>
+</body>
+</html>
