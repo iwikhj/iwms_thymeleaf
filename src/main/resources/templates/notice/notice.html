@@ -198,7 +198,6 @@
 				API.get("/notices" + search).then(async resp => {
 					setCookie("search", search);
 					
-					console.log("//", API.target)
 					//table
 					let tbody = getEmptyElement(document.querySelector('.table_area tbody'));
 					resp.data.forEach(function (item, index) {

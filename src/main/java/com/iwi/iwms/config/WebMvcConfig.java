@@ -1,4 +1,4 @@
-package com.iwi.iwms.web.config;
+package com.iwi.iwms.config;
 
 import java.util.TimeZone;
 
@@ -23,7 +23,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
     public void addViewControllers(ViewControllerRegistry registry) {
     	registry.addViewController("/").setViewName("notice/notice");
-    	
     	registry.addViewController("/notice").setViewName("notice/notice");
     	registry.addViewController("/notice/detail").setViewName("notice/detail");
     	registry.addViewController("/system").setViewName("system/user");
