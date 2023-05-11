@@ -52,11 +52,11 @@
 		const hasNext = true;	//pagination.end < pagination.totalPageCount;
 		
 		if(hasPrev) {
-			let prevDiv = document.createElement('div');
-			prevDiv.classList.add('navi_area');
-			prevDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi first' data-page='${1}'>&lt;&lt;</a>`);	
-			prevDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi prev' data-page='${pagination.prev}'>&lt;</a>`);	
-			fragmentPage.appendChild(prevDiv);			
+			let prev = document.createElement('div');
+			prev.classList.add('navi_area');
+			prev.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi first' data-page='${1}'>&lt;&lt;</a>`);	
+			prev.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi prev' data-page='${pagination.prev}'>&lt;</a>`);	
+			fragmentPage.appendChild(prev);			
 		}
 		
 		let ul = document.createElement('ul');	
@@ -70,11 +70,11 @@
 		fragmentPage.appendChild(ul);
 
 		if(hasNext) {
-			let nextDiv = document.createElement('div');
-			nextDiv.classList.add('navi_area');
-			nextDiv.insertAdjacentHTML('beforeend', `<a href='javascript' class='btn_navi next' data-page='${pagination.next}'>&gt;</a>`);	
-			nextDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi last' data-page='${pagination.totalPageCount}'>&gt;&gt;</a>`);	
-			fragmentPage.appendChild(nextDiv);	
+			let next = document.createElement('div');
+			next.classList.add('navi_area');
+			next.insertAdjacentHTML('beforeend', `<a href='javascript' class='btn_navi next' data-page='${pagination.next}'>&gt;</a>`);	
+			next.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi last' data-page='${pagination.totalPageCount}'>&gt;&gt;</a>`);	
+			fragmentPage.appendChild(next);	
 		}
 
 		element.appendChild(fragmentPage);
