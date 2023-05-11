@@ -44,64 +44,36 @@
 	 */	
 	function renderPagination(pagination, callback) {
 		const element = getEmptyElement(document.getElementById('pagination'));
-		//const totalCount = pagination.totalCount;
-		const currentPage = pagination.currentPage;
-		//const limitPerPage = pagination.limitPerPage;
-		const pagePerBlock = pagination.pagePerBlock;
 		
-		//if (totalCount <= limitPerPage) return; 
-
-		//const totalPage = Math.ceil(totalCount / limitPerPage);
-		//const pageGroup = Math.ceil(currentPage / pagePerBlock);	//currentBock
-		const totalPage = pagination.totalPage;
-		const pageGroup = pagination.currentBlock;
+		//if(pagination.totalCount <= pagination.limitPerPage) return; 
+			
+		const fragmentPage = document.createDocumentFragment();
+		const hasPrev = true;	//pagination.prev != 1;
+		const hasNext = true;	//pagination.end < pagination.totalPageCount;
 		
-		let end = pageGroup * pagePerBlock;
-		if (end > totalPage) end = totalPage;
-		let begin = end - (pagePerBlock - 1) <= 0 ? 1 : end - (pagePerBlock - 1) + (pageGroup * pagePerBlock - end);
-		let next = end + 1;
-		if (next > totalPage) next = totalPage;
-		let prev = begin - 1;
-		if (prev < 1) prev = 1;
-		
-		/*
-		console.log('page=' +  currentPage 
-				+ ', block=' + pageGroup 
-				+ ', fisrt=1' 
-				+ ', prev=' +  prev 
-				+ ', begin=' + begin 
-				+ ', end=' + end
-				+ ', next=' + next 
-				+ ', last(total)=' + totalPage);
-		*/
-		
-		let fragmentPage = document.createDocumentFragment();
-
-		let hasPrev = true;	//prev != 1;
 		if(hasPrev) {
 			let prevDiv = document.createElement('div');
 			prevDiv.classList.add('navi_area');
 			prevDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi first' data-page='${1}'>&lt;&lt;</a>`);	
-			prevDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi prev' data-page='${prev}'>&lt;</a>`);	
+			prevDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi prev' data-page='${pagination.prev}'>&lt;</a>`);	
 			fragmentPage.appendChild(prevDiv);			
 		}
 		
 		let ul = document.createElement('ul');	
 		ul.classList.add('page_num');
-		for (let i = begin; i <= end; i++) {
+		for (let i = pagination.begin; i <= pagination.end; i++) {
 			const li = document.createElement('li');
 			li.classList.add('num');
-			li.insertAdjacentHTML('beforeend', `<a href='#' class='btn_num ${i == currentPage ? 'on' : ''}' data-page='${i}'>${i}</a>`);
+			li.insertAdjacentHTML('beforeend', `<a href='#' class='btn_num ${i == pagination.page ? 'on' : ''}' data-page='${i}'>${i}</a>`);
 			ul.appendChild(li);
 		}
 		fragmentPage.appendChild(ul);
 
-		let hasNext = true;	//end < totalPage;
 		if(hasNext) {
 			let nextDiv = document.createElement('div');
 			nextDiv.classList.add('navi_area');
-			nextDiv.insertAdjacentHTML('beforeend', `<a href='javascript' class='btn_navi next' data-page='${next}'>&gt;</a>`);	
-			nextDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi last' data-page='${totalPage}'>&gt;&gt;</a>`);	
+			nextDiv.insertAdjacentHTML('beforeend', `<a href='javascript' class='btn_navi next' data-page='${pagination.next}'>&gt;</a>`);	
+			nextDiv.insertAdjacentHTML('beforeend', `<a href='#' class='btn_navi last' data-page='${pagination.totalPageCount}'>&gt;&gt;</a>`);	
 			fragmentPage.appendChild(nextDiv);	
 		}
 
