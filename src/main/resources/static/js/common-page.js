@@ -3,14 +3,13 @@
 	 */
 	async function onload(pageInitUrl, callback) {
 		document.body.style.opacity = 0;
-		await API.get(pageInitUrl)
-		.then(async resp => {
+		await API.get(pageInitUrl).then(async resp => {
 			document.getElementById('login-info').classList.remove('hide');
 			document.getElementById('login-username').innerText = resp.loginInfo.userNm;
 			
 			renderMenu(resp.loginInfo.menus);
 			
-			await callback();
+			await callback(resp);
 			
 			document.body.style.opacity = 1;	
 		}).catch(err => {
@@ -118,8 +117,7 @@
 	async function login() {
 		let formData = new FormData(document.getElementById('login-form'));
 			
-		API.post('/login', formData)
-		.then(resp => {
+		API.post('/login', formData).then(resp => {
 			localStorage.setItem('accessToken', resp.data.accessToken);	
 			localStorage.setItem('refreshToken', resp.data.refreshToken);	
 			alert('로그인!!');

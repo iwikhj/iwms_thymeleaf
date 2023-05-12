@@ -29,19 +29,25 @@
 		<section>
 			<form th:id="notice-form">
 				<table>
+					<colgroup>
+						<col style="width:25%;">
+						<col style="width:25%;">
+						<col style="width:25%;">
+						<col style="width:25%;">
+					</colgroup>				
 					<tr>
 						<th>Seq</th>
-						<td><input type="text" name="noticeSeq"/></td>
+						<td><input type="text" name="userSeq"/></td>
 						<th>소속</th>
-						<td><input type="text" name="compSeq"/></td>
+						<td><select name="compSeq"></select></td>
 					</tr>
 					<tr>	
 						<th>제목</th>
-						<td colspan="4"><input type="text" name="title"/></td>
+						<td colspan="3"><input type="text" name="title"/></td>
 					</tr>	
 					<tr>		
 						<th>내용</th>
-						<td colspan="4"><textarea name="content" rows="4"></textarea></td>
+						<td colspan="3"><textarea name="content" rows="4"></textarea></td>
 					</tr>	
 					<tr>	
 						<th>최상단 고정 여부</th>
@@ -57,14 +63,14 @@
 					</tr>
 					<tr>			
 						<th>사용 여부</th>
-						<td colspan="4">
+						<td colspan="3">
 							<label>네</label><input type="radio" name="useYn" value="Y" checked />
 							<label>아니오</label><input type="radio" name="useYn" value="N"/>			
 						</td>		
 					</tr>	
 					<tr>				
 						<th>첨부파일</th>
-						<td colspan="4"><input type="file" multiple="multiple" name="files"/></td>												
+						<td colspan="3"><input type="file" multiple="multiple" name="files"/></td>												
 					</tr>
 					<tr>
 						<td colspan="4">
@@ -136,7 +142,12 @@
 		</section>	
 	</div>
 	<script th:inline="javascript">
-		onload("/pages/system/user", async () => {
+		onload("/pages/system/user", async (resp) => {
+			var compSelector = document.querySelector("select[name=compSeq]");
+			resp.data.compList.forEach(function (item, index) {
+				compSelector.insertAdjacentHTML("beforeend", `<option value="${item.compSeq}">${item.compNm}</option>`);
+			});
+			
 			const searchParams = new URLSearchParams(getCookie("search"));
 			var page = searchParams.get('page') || 1;
 			document.getElementById("keykind").value = searchParams.get('keykind') || document.getElementById("keykind").options[0].value;
@@ -149,8 +160,8 @@
 		function renderContents(page) {
 			return new Promise(async (resolve) => {
 				const keyword = document.getElementById("keyword").value;
-				const selector = document.getElementById("keykind");
-				const keykind = selector.options[selector.selectedIndex].value;
+				const keySelector = document.getElementById("keykind");
+				const keykind = keySelector.options[keySelector.selectedIndex].value;
 				let search = "?page=" + page + (keyword ? "&keykind=" + keykind + "&keyword=" + keyword : "");
 				
 				API.get("/users" + search).then(async resp => {
