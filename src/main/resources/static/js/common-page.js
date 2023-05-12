@@ -34,6 +34,7 @@
 			}
 			li.insertAdjacentHTML('beforeend', `<a href='${menu.pageUrl}'>${menu.menuNm}</a>`);	
 			
+			//sub
 			if(menu.subMenus.length > 0) {
 				let subUl = document.createElement('ul');
 				subUl.classList.add('ss');
@@ -50,6 +51,7 @@
 				subUl.appendChild(fragmentSubMenu);
 				li.appendChild(subUl);						
 			}
+			//.sub(recursive change)
 			
 			fragmentMenu.appendChild(li);
 		}
