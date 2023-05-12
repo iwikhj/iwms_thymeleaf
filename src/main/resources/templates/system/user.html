@@ -5,131 +5,135 @@
 </head>
 <body>
 	<div>
-		<div>
-			<div id="login" class="hide">
-				<form th:id="login-form">
+		<section>
+			<div id="login">
+				<form th:id="login-form" class="hide">
 					<label>아이디</label>
 					<input type="text" th:name="username"/>
 					<label>비밀번호</label>
 					<input type="password" th:name="password"/>
 					<input type="button" onclick="javascript:login();" value="로그인"/>
 				</form>
+				<div id="login-info" class="hide">
+					<label>이름: </label>
+					<span id="login-username"></span>
+					<input type="button" onclick="javascript:logout();" value="로그아웃"/>
+				</div>			
 			</div>
-			<div id="login-info" class="hide">
-				<label>이름: </label>
-				<span id="login-username"></span>
-				<input type="button" onclick="javascript:logout();" value="로그아웃"/>
-			</div>
-		</div>
-		<br>
+		</section>
 		
-		<header id="header" class="main-header" th:fragment="header">
-			<div id="header">
-			    <div class="header_inner">
-			        <div class="lt_logo_area">
-			            <ul>
-			                <li><a th:href="@{/guide/guide.do}"><img th:src="@{/img/CI_SportsOn.png}" alt="공공 스포츠 클럽" /></a></li>
-			            </ul>
-			        </div>
-			        <div class="rt_menu_area" id="nav"></div>
-			    </div>
-			</div>
-		</header>
+		<section>
+			<div id="nav"></div>
+		</section>
 		
-		<div>
-			<form th:id="user-form">
-				<span>Seq</span>
-				<input type="text" name="userSeq"/>
-				<span>소속</span>
-				<input type="text" name="compSeq"/>
-				<span>제목</span>
-				<input type="text" name="title"/>
-				<span>내용</span>
-				<input type="text" name="content"/>
-				<span>최상단 고정 여부</span>
-				<input type="text" name="fixedTopYn" value="N"/>
-				<span>메인상단 노출 여부</span>
-				<input type="text" name="mainTopYn" value="N"/>
-				<span>사용 여부</span>
-				<input type="text" name="useYn" value="Y"/>
-				<span>첨부파일</span>
-				<input type="file" multiple="multiple" name="files"/>
-				<input type="button" onclick="javascript:add();" value="등록"/>
-				<input type="button" onclick="javascript:update();" value="수정"/>
-				<input type="button" onclick="javascript:remove();" value="삭제"/>
+		<section>
+			<form th:id="notice-form">
+				<table>
+					<tr>
+						<th>Seq</th>
+						<td><input type="text" name="noticeSeq"/></td>
+						<th>소속</th>
+						<td><input type="text" name="compSeq"/></td>
+					</tr>
+					<tr>	
+						<th>제목</th>
+						<td colspan="4"><input type="text" name="title"/></td>
+					</tr>	
+					<tr>		
+						<th>내용</th>
+						<td colspan="4"><textarea name="content" rows="4"></textarea></td>
+					</tr>	
+					<tr>	
+						<th>최상단 고정 여부</th>
+						<td>
+							<label>네</label><input type="radio" name="fixedTopYn" value="Y"/>
+							<label>아니오</label><input type="radio" name="fixedTopYn" value="N" checked />		
+						</td>
+						<th>메인상단 노출 여부</th>
+						<td>
+							<label>네</label><input type="radio" name="mainTopYn" value="Y"/>
+							<label>아니오</label><input type="radio" name="mainTopYn" value="N" checked />							
+						</td>
+					</tr>
+					<tr>			
+						<th>사용 여부</th>
+						<td colspan="4">
+							<label>네</label><input type="radio" name="useYn" value="Y" checked />
+							<label>아니오</label><input type="radio" name="useYn" value="N"/>			
+						</td>		
+					</tr>	
+					<tr>				
+						<th>첨부파일</th>
+						<td colspan="4"><input type="file" multiple="multiple" name="files"/></td>												
+					</tr>
+					<tr>
+						<td colspan="4">
+							<input type="button" onclick="javascript:remove();" value="삭제"/>
+							<input type="button" onclick="javascript:update();" value="수정"/>
+							<input type="button" onclick="javascript:add();" value="등록"/>
+						</td>
+					</tr>
+				</table>
 			</form>
-		</div>		
+		</section>		
 	
-		<div id="contents">
-			<div class="sub_inner">
-				<div class="step_box board">
-					<div class="box_area">
-						<div class="lay_topic">
-							<div>
-								<p>사용자 정보</p>
-							</div>
-						</div>
-						<!-- 게시판 탑 영역 -->
-						<div class="board_top">
-							<div class="top_area">
-								<div class="l_area">
-									<div class="number">총 <b>0</b> 건</div>
-								</div>
-								<div class="r_area">
-									<div class="board_search">
-										<select class="slct_condi" id="keykind">
-											<option value="title">제목</option>
-											<option value="compNm">소속</option>
-											<option value="regNm">작성자</option>
-										</select>
-										<input type="text" class="ipt_search" id="keyword" placeholder="검색어를 입력하세요."/>
-										<button type="button" class="btn_search" onclick="javascript:renderContents(1); return false;">검색하기</button>
-									</div>
-								</div>
-							</div>
-						</div>	
-				
-						<!-- 게시판 테이블 영역 -->
-						<div class="board_table">
-							<div class="table_area">
-								<table>
-									<caption>공지사항 : 번호, 제목, 첨부파일, 작성자, 등록일, 조회수를 포함한 표입니다.</caption>
-									<colgroup>
-										<col style="width:5%;">
-										<col style="width:5%;">
-										<col style="width:15%;">
-										<col style="width:auto;">
-										<col style="width:8%;">
-										<col style="width:12.5%;">
-										<col style="width:9%;">
-										<col style="width:8.5%;">
-									</colgroup>
-									<thead>
-										<tr>
-											<th><input type="checkbox" onclick="javascript:checkAll(this.checked);"/></th>
-											<th>번호</th>
-											<th>소속명</th>
-											<th>제목</th>
-											<th>첨부</th>
-											<th>작성자</th>
-											<th>등록일</th>
-											<th>조회수</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						
-						<!-- 페이지네이션 -->
-						<div class="pagination">
-							<div class="pagi_area" id="pagination"></div>
-						</div>
-					</div>
-				</div>	
+		<section id="contents">
+			<table>
+				<tr>
+					<td>
+						<div class="number">총 <b>0</b> 건</div>
+					</td>
+					<td style="width: 65%;">
+					</td>
+					<td>
+						<select class="slct_condi" id="keykind">
+							<option value="title">제목</option>
+							<option value="compNm">소속</option>
+							<option value="regNm">작성자</option>
+						</select>					
+					</td>
+					<td>
+						<input type="text" class="ipt_search" id="keyword" placeholder="검색어를 입력하세요."/>
+					</td>
+					<td>
+						<button type="button" class="btn_search" onclick="javascript:renderContents(1); return false;">검색하기</button>
+					</td>
+				</tr>
+			</table>		
+			<!-- 게시판 테이블 영역 -->
+			<div class="board_table">
+				<table>
+					<colgroup>
+						<col style="width:5%;">
+						<col style="width:5%;">
+						<col style="width:15%;">
+						<col style="width:auto;">
+						<col style="width:8%;">
+						<col style="width:12.5%;">
+						<col style="width:9%;">
+						<col style="width:8.5%;">
+					</colgroup>
+					<thead>
+						<tr>
+							<th><input type="checkbox" onclick="javascript:checkAll(this.checked);"/></th>
+							<th>번호</th>
+							<th>소속명</th>
+							<th>제목</th>
+							<th>첨부</th>
+							<th>작성자</th>
+							<th>등록일</th>
+							<th>조회수</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 			</div>
-		</div>	
+			<!-- 페이지네이션 -->
+			<div class="pagination">
+				<div class="pagi_area" id="pagination"></div>
+			</div>
+		</section>	
 	</div>
 	<script th:inline="javascript">
 		onload("/pages/system/user", async () => {
@@ -153,27 +157,21 @@
 					setCookie("search", search, new URL(location.href).pathname);
 					
 					//table
-					let tbody = getEmptyElement(document.querySelector('.table_area tbody'));
+					let tbody = getEmptyElement(document.querySelector('.board_table tbody'));
 					resp.data.forEach(function (item, index) {
 						var row = tbody.insertRow();
 						row.insertCell().insertAdjacentHTML("beforeend", `<input type="checkbox" value="${item.userSeq}"/>`);
 						row.insertCell().innerText = item.rowNum;
 						row.insertCell().innerText = item.compNm;
-						let titleCell = row.insertCell();
-						titleCell.classList.add('left');
-						titleCell.insertAdjacentHTML("beforeend", `<a href="javascript:detail(${item.userSeq});" class="board_tit notice">${item.title}</a>`);
-						let attachedCell = row.insertCell();
-						if(item.attachedFiles && item.attachedFiles.length > 0) {
-							attachedCell.insertAdjacentHTML("beforeend", `<span class="attached">첨부파일 있음</span>`);
-							attachedCell.title = item.attachedFiles.map(function(item) { return item['fileOrgNm'];}).join('\n');
-						}
-						row.insertCell().insertAdjacentHTML("beforeend", `<span class="writer">${item.regNm}</span>`);
+						row.insertCell().insertAdjacentHTML("beforeend", `<a href="javascript:detail(${item.userSeq});" class="board_tit notice">${item.userNm}</a>`);
+						row.insertCell().innerText = item.userGb;
+						row.insertCell().innerText = item.regNm;
 						row.insertCell().innerText = new Date(item.regDt).toLocaleDateString();
 						row.insertCell().innerText = item.viewCnt;
 					});
 					
 					//total count
-					document.querySelector('.board_top .number b').innerText = resp.query.pagination.totalCount;
+					document.querySelector('.number b').innerText = resp.query.pagination.totalCount;
 					
 					//paging
 					renderPagination(resp.query.pagination, this.renderContents);
@@ -185,9 +183,7 @@
 		}
 		
 		function detail(seq) {
-			API.patch("/users/" + seq)
-			.then(() => location.href = "/system/user/detail?userSeq=" + seq)
-			.catch(err => alert(err.message));
+			location.href = "/system/user/detail?userSeq=" + seq
 		}
 		
 		function add() {

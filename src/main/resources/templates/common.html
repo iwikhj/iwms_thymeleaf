@@ -6,23 +6,50 @@
 		<title th:replace="${title}"></title>
 		<link rel="shortcut icon" href="#">
 		
-		<link type="text/css" rel="stylesheet" th:href="@{/css/layout.css}">
-		<link type="text/css" rel="stylesheet" th:href="@{/css/default.css}">
-		<link type="text/css" rel="stylesheet" th:href="@{/css/main.css}">
-		<link type="text/css" rel="stylesheet" th:href="@{/css/sub.css}">
-		
 		<style>
-			.active {color: blue; font-weight: bold;}
-			.hide {display: none;} 
-			.pagination ul li {float: left;} 
+			section {width: 70%; margin: 0 auto; padding: 5px;}
+			table {width: 100%; border-collapse: collapse;}
+	  		th, td {border: 1px solid #333; padding: 5px;}
+	  		td input[type=text], td select {width: 100%; box-sizing : border-box; height: 24px;}
+	  		td input[type=button] {float: right; margin: 0 5px;}
+	  		td textarea {width: 100%; box-sizing : border-box;}
+	  		ul li {float: left; list-style: none;} 
+	
+			#login {width: 100%; text-align: right;}	
+			#login .hide {display: none;} 
+			
+			#nav {width: 100%; text-align: right;}	
+			#nav ul {display: inline-block; vertical-align: middle; padding-inline-start: 0; background: #fff;}
+			#nav ul li {position: relative; margin-left: 25px;}
+			#nav ul li ul {display:none; position: absolute; right: 0; top: 20px;}
+			#nav ul li:hover ul, #nav ul li.on ul {display: block;}
+			#nav ul li ul li {float: left; margin-left: 0;  float: right;}
+			#nav ul li a {color: #333;  white-space: nowrap;}
+			#nav ul li:hover > a, #nav ul li.on > a {color: blue; font-weight: bold;}
+	  
+				
+			/* 게시판 페이지네이션 */
+			.pagination {width: 100%; margin-top: 45px;}
+			.pagination .pagi_area {width: 100%; text-align: center;}
+			.pagination .navi_area { display: inline-block; vertical-align: middle;}
+			.pagination .navi_area .btn_navi {width: 30px; height: 30px; margin-right: 10px; font-size: 0; background: center no-repeat; display: inline-block;vertical-align: middle;}
+			.pagination .navi_area .btn_navi:last-child {margin-right: 0;}
+			.pagination .navi_area .btn_navi.first {background-image: url(../../img/icon_navi_first.svg);}
+			.pagination .navi_area .btn_navi.prev {background-image: url(../../img/icon_navi_prev.svg);}
+			.pagination .navi_area .btn_navi.next {background-image: url(../../img/icon_navi_next.svg);}
+			.pagination .navi_area .btn_navi.last {background-image: url(../../img/icon_navi_last.svg);}
+			.pagination .page_num {margin: 0 10px; display: inline-block; vertical-align: middle; padding-inline-start: 0;}
+			.pagination .page_num .btn_num {width: 40px; height: 40px; margin-right: 2px; border-radius: 50%; text-align: center; line-height: 40px; font-size: 16px; color: #757575; display: inline-block; vertical-align: middle;}
+			.pagination .page_num .btn_num:last-child {margin-right: 0; }
+			.pagination .page_num .btn_num.on {color: #fff; font-weight: 500; background: #323351;}			
 		</style>
 		
 		<script type="text/javascript" th:src="@{/js/common.js}"></script>  
 		<script type="text/javascript" th:src="@{/js/common-api.js}"></script>  
 		<script type="text/javascript" th:src="@{/js/common-page.js}"></script>  
-		<script th:inline="javascript" >
-			var apiBaseUrl = [[${@environment.getProperty('api.base-url')}]];
-			var apiVersion = [[${@environment.getProperty('api.version')}]];
+		<script>
+			var apiBaseUrl = '[[${@environment.getProperty("api.base-url")}]]';
+			var apiVersion = '[[${@environment.getProperty("api.version")}]]';
 			const API = new CommonApi(apiBaseUrl, apiVersion);
 		</script>  
 	</head>

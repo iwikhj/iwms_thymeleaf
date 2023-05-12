@@ -14,7 +14,7 @@
 			
 			document.body.style.opacity = 1;	
 		}).catch(err => {
-			document.getElementById('login').classList.remove('hide');
+			document.getElementById('login-form').classList.remove('hide');
 			document.body.style.opacity = 1;	
 			//alert(err.message);
 		});
@@ -33,6 +33,24 @@
 				li.classList.add('on');
 			}
 			li.insertAdjacentHTML('beforeend', `<a href='${menu.pageUrl}'>${menu.menuNm}</a>`);	
+			
+			if(menu.subMenus.length > 0) {
+				let subUl = document.createElement('ul');
+				subUl.classList.add('ss');
+				let fragmentSubMenu = document.createDocumentFragment();
+				for(let j = 0; j < menu.subMenus.length; j++) {
+					let subMenu = menu.subMenus[j];
+					let subLi = document.createElement('li');
+					if(subMenu.selectedYn == 'Y') {
+						subLi.classList.add('on');
+					}
+					subLi.insertAdjacentHTML('beforeend', `<a href='${subMenu.pageUrl}'>${subMenu.menuNm}</a>`);
+					fragmentSubMenu.appendChild(subLi);
+				}
+				subUl.appendChild(fragmentSubMenu);
+				li.appendChild(subUl);						
+			}
+			
 			fragmentMenu.appendChild(li);
 		}
 		ul.appendChild(fragmentMenu);
@@ -45,6 +63,7 @@
 	function renderPagination(pagination, callback) {
 		const element = getEmptyElement(document.getElementById('pagination'));
 		
+		if(pagination.totalCount == 0) return; 
 		//if(pagination.totalCount <= pagination.limitPerPage) return; 
 			
 		const fragmentPage = document.createDocumentFragment();

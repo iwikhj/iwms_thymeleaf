@@ -5,100 +5,64 @@
 </head>
 <body>
 	<div>
-		<div>
-			<div id="login" class="hide">
-				<form th:id="login-form">
+		<section>
+			<div id="login">
+				<form th:id="login-form" class="hide">
 					<label>아이디</label>
 					<input type="text" th:name="username"/>
 					<label>비밀번호</label>
 					<input type="password" th:name="password"/>
 					<input type="button" onclick="javascript:login();" value="로그인"/>
 				</form>
+				<div id="login-info" class="hide">
+					<label>이름: </label>
+					<span id="login-username"></span>
+					<input type="button" onclick="javascript:logout();" value="로그아웃"/>
+				</div>			
 			</div>
-			<div id="login-info" class="hide">
-				<label>이름: </label>
-				<span id="login-username"></span>
-				<input type="button" onclick="javascript:logout();" value="로그아웃"/>
-			</div>
-		</div>
-		<br>
+		</section>
 		
-		<header id="header" class="main-header" th:fragment="header">
-			<div id="header">
-			    <div class="header_inner">
-			        <div class="lt_logo_area">
-			            <ul>
-			                <li><a th:href="@{/guide/guide.do}"><img th:src="@{/img/CI_SportsOn.png}" alt="공공 스포츠 클럽" /></a></li>
-			            </ul>
-			        </div>
-			        <div class="rt_menu_area" id="nav"></div>
-			    </div>
-			</div>
-		</header>
-	
-		<div id="contents">
-			<div class="sub_inner">
-				<div class="step_box board">
-					<div class="box_area">
-						<div class="lay_topic">
-							<div>
-								<p>공지사항</p>
-							</div>
-						</div>
-						
-						<!-- 게시판 view -->
-						<div class="board_view">
-							<div class="view_area">
-								<div class="view_info">
-									<div class="tit"></div>
-									<ul class="info">
-										<li class="item writer"></li>
-										<li class="item regDt"></li>
-										<li class="item viewCnt"></li>
-									</ul>
-								</div>
-								<div class="view_cont content"></div>
-								<div class="view_attach attached">
-									<ul class="atch_group">
-										<!-- 
-										<li class="item" th:each="clubFileMng : ${fileList}">
-											<a th:href="@{/file/fileDown.do(fileMngSeq=${clubFileMng.fileMngSeq})}" target="_blank" th:text="${clubFileMng.fileOrgnlNm}"></a>
-										</li>
-										 -->
-									</ul>
-								</div>
-							</div>
-							
-							<div class="board_navi">
-								<ul class="navi_group">
-									<li class="item">
-										<div class="tit">이전글</div>
-										<div class="cont">
-											이전글 없습니다.
-										</div>
-									</li>
-									<li class="item">
-										<div class="tit">다음글</div>
-										<div class="cont">
-											다음글 없습니다.
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
+		<section>
+			<div id="nav"></div>
+		</section>
 
-						<div class="crud_area">
-							<ul class="btn_group">
-								<li class="unit">
-									<a href="javascript: history.back();" class="btn line-black">목록</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>	
+		<section id="contents">
+			<form th:id="notice-form">
+				<table>
+					<tr>
+						<th>제목</th>
+						<td colspan="5"><input type="text" name="title"/></td>
+					</tr>
+					<tr>	
+						<th>작성자</th>
+						<td><input type="text" name="regNm"/></td>
+						<th>작성일</th>
+						<td><input type="text" name="regDt"/></td>
+						<th>조회수</th>
+						<td><input type="text" name="viewCnt"/></td>
+					</tr>	
+					<tr>		
+						<th>첨부파일</th>
+						<td colspan="5">
+							<ul id="attached"></ul>
+						</td>
+					</tr>						
+					<tr>		
+						<th>내용</th>
+						<td colspan="5"><textarea name="content" rows="4"></textarea></td>
+					</tr>	
+					<tr>
+						<td colspan="6">
+							<input type="button" onclick="javascript:alert('다음');" value="다음글"/>
+							<input type="button" onclick="javascript: history.back();" value="목록"/>
+							<input type="button" onclick="javascript:alert('이전');" value="이전글"/>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</section>	
 	</div>
+	
 	<script th:inline="javascript">
 		onload("/pages/notice/detail", async () => {
 			const noticeSeq = new URL(location.href).searchParams.get('noticeSeq');
@@ -109,23 +73,20 @@
 			return new Promise(resolve => {
 				API.get("/notices/" + noticeSeq).then(async resp => {
 					let data = resp.data;
-					document.querySelector('.tit').innerText = data.title;
-					document.querySelector('.writer').innerText = data.regNm;
-					document.querySelector('.regDt').innerText = data.regDt;
-					document.querySelector('.viewCnt').innerText = data.viewCnt;
-					document.querySelector('.content').innerHTML = data.content;
+					let form = document.getElementById('notice-form');
+					form.title.value = data.title;
+					form.regNm.value = data.regNm;
+					form.regDt.value = data.regDt;
+					form.viewCnt.value = data.viewCnt;
+					form.content.value = data.content;
 					
-					let attachedFiles = data.attachedFiles;
-					if(attachedFiles && attachedFiles.length > 0) {
-						let fragmentAttached = document.createDocumentFragment();
-						attachedFiles.forEach(function (item, index) {
-							let attachedLi = document.createElement('li');
-							attachedLi.classList.add('item');
-							attachedLi.insertAdjacentHTML("beforeend", `<a href="javascript:API.download('${item.fileDownloadPath}', '${item.fileOrgNm}');" class="attached">${item.fileOrgNm}</a>`);
-							fragmentAttached.appendChild(attachedLi);
-						});
-						document.querySelector('.attached ul').appendChild(fragmentAttached);
-					}
+					let fragmentAttached = document.createDocumentFragment();
+					data.attachedFiles.forEach(function (item, index) {
+						let li = document.createElement('li');
+						li.insertAdjacentHTML("beforeend", `<a href="javascript:API.download('${item.fileDownloadPath}', '${item.fileOrgNm}');" class="attached">${item.fileOrgNm}</a>`);
+						fragmentAttached.appendChild(li);
+					});
+					document.getElementById('attached').appendChild(fragmentAttached);
 					
 					resolve();
 				});					
