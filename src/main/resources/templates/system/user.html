@@ -216,12 +216,12 @@
 		}
 		
 		function checkAll(checked) {
-			let checkbox = document.querySelectorAll('.table_area tbody input[type=checkbox]');
+			let checkbox = document.querySelectorAll('.board_table tbody input[type=checkbox]');
 			checkbox.forEach(item => item.checked = checked);
 		}
 		
 		async function remove() {
-			let checked = document.querySelectorAll('.table_area tbody input[type=checkbox]:checked');
+			let checked = document.querySelectorAll('.board_table tbody input[type=checkbox]:checked');
 			if (checked.length == 0) {
 				alert("사용자를 선택해주세요");
 				return false;
